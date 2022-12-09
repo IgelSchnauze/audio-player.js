@@ -90,6 +90,7 @@ function CtPlayer(el) {
 
         this.wavesurfer = WaveSurfer.create({
             container: this.container.querySelector('.audiopl-wave-form'),
+            backend: 'MediaElement',
             height: 50,
             normalize: true,
             barWidth: 3,
