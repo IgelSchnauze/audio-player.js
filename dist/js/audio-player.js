@@ -66,6 +66,13 @@ function CtPlayer(el) {
     this.initPlayer = function () {
         this.container.addEventListener('mousedown', this.mouseDown.bind(this))
 
+        this.container.addEventListener('mouseleave', () => {
+            if(this.volumeBtn.classList.contains('open')) {
+                this.volumeBtn.classList.toggle('open')
+                this.volumeControls.classList.toggle('hidden')
+            }
+        })
+
         this.playpauseBtn.addEventListener('click', this.togglePlay.bind(this))
 
         this.downloadBtn.href = this.getAudioSrc()
@@ -290,7 +297,7 @@ function CtPlayer(el) {
             this.volumeControls.style.bottom = '-54px'
             this.volumeControls.style.left = '54px'
         } else if(el.offsetTop < 154) {
-            this.volumeControls.style.bottom = '-164px'
+            this.volumeControls.style.bottom = '-140px'
             this.volumeControls.style.left = '-3px'
         } else {
             this.volumeControls.style.bottom = '52px'

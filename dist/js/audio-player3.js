@@ -66,6 +66,15 @@ function CtPlayer(el) {
     this.initPlayer = function () {
         this.container.addEventListener('mousedown', this.mouseDown.bind(this))
 
+        // this.container.addEventListener('mouseleave', this.mouseLeave.bind(this))
+
+        this.container.addEventListener('mouseleave', () => {
+            if(this.volumeBtn.classList.contains('open')) {
+                this.volumeBtn.classList.toggle('open')
+                this.volumeControls.classList.toggle('hidden')
+            }
+        })
+
         this.playpauseBtn.addEventListener('click', this.togglePlay.bind(this))
 
         this.downloadBtn.href = this.getAudioSrc()
@@ -184,6 +193,13 @@ function CtPlayer(el) {
         }, false)
     }
 
+    this.mouseLeave = function(event) {
+        if(this.volumeBtn.classList.contains('open')) {
+            this.volumeBtn.classList.toggle('open')
+            this.volumeControls.classList.toggle('hidden')
+        }
+    }
+
     this.isDraggable = function (el) {
         let canDrag = false,
             classes = Array.from(el.classList)
@@ -299,7 +315,8 @@ function CtPlayer(el) {
         //     this.volumeControls.style.left = '-3px'
         // }
 
-        this.volumeControls.style.bottom = '-164px'
+        this.volumeControls.style.bottom = '-140px'
+        // this.volumeControls.style.bottom = '-164px'
         this.volumeControls.style.left = '-3px'
     }
 }
