@@ -75,15 +75,18 @@ function CtPlayer(el) {
         'audiopl-play-pause-icon',
     ]
 
+    this.closeVolumeMouseleave = false
+
     this.initPlayer = function () {
         this.container.addEventListener('mousedown', this.mouseDown.bind(this))
 
-        // this.container.addEventListener('mouseleave', () => {
-        //     if(this.volumeBtn.classList.contains('open')) {
-        //         this.volumeBtn.classList.toggle('open')
-        //         this.volumeControls.classList.toggle('hidden')
-        //     }
-        // })
+        if(this.closeVolumeMouseleave)
+            this.container.addEventListener('mouseleave', () => {
+                if(this.volumeBtn.classList.contains('open')) {
+                    this.volumeBtn.classList.toggle('open')
+                    this.volumeControls.classList.toggle('hidden')
+                }
+            })
 
         this.playpauseBtn.addEventListener('click', this.togglePlay.bind(this))
 
@@ -124,12 +127,11 @@ function CtPlayer(el) {
             cursorColor: '#44BFA3',
             cursorWidth: 2,
             hideScrollbar: true,
-            backend: 'MediaElement', //HTML5 audio tag
-            // backend: 'WebAudio',
+            backend: 'MediaElement', //HTML5 audio tag, instead 'WebAudio'
         })
 
         this.wavesurfer.on('volume', this.updateVolume.bind(this))
-        this.wavesurfer.on('ready', () => {
+        this.wavesurfer.on('waveform-ready', () => {
             this.totalTime.textContent = this.formatTime(this.wavesurfer.getDuration())
         })
         this.wavesurfer.on('loading', () => {
@@ -138,7 +140,7 @@ function CtPlayer(el) {
             this.loading.style.display = 'block'
             this.downloadBtn.href = this.getAudioSrc()
         })
-        this.wavesurfer.on('ready', () => {
+        this.wavesurfer.on('waveform-ready', () => {
             this.playpauseBtn.style.display = 'block'
             this.loading.style.display = 'none'
         })
@@ -178,7 +180,7 @@ function CtPlayer(el) {
 
         if (this.audioTag.hasAttribute('autoplay')) {
             this.audioTag.pause()
-            this.wavesurfer.on('ready', this.wavesurfer.play.bind(this.wavesurfer))
+            this.wavesurfer.on('waveform-ready', this.wavesurfer.play.bind(this.wavesurfer))
         }
     }
 
@@ -313,17 +315,10 @@ function CtPlayer(el) {
     }
 
     this.isVolumePanel = function (el) {
-        let on_panel = false,
-            classes = Array.from(el.classList)
-        this.volumePanelClasses.forEach(panel_class => {
-            if(classes.indexOf(panel_class) !== -1)
-                on_panel = true
-        })
-        this.playPauseClasses.forEach(panel_class => {
-            if(classes.indexOf(panel_class) !== -1)
-                on_panel = true
-        })
-        return on_panel
+        let classes = Array.from(el.classList)
+        if(this.volumePanelClasses.some(panel_class => classes.indexOf(panel_class) !== -1))
+            return true
+        return this.playPauseClasses.some(panel_class => classes.indexOf(panel_class) !== -1)
     }
 
     this.directionAware = function () {
@@ -340,7 +335,6 @@ function CtPlayer(el) {
         // }
 
         this.volumeControls.style.bottom = '-140px'
-        // this.volumeControls.style.bottom = '-164px'
         this.volumeControls.style.left = '-3px'
     }
 }
